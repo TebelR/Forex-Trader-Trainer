@@ -1,0 +1,34 @@
+{
+    "interface-version": "0.0.1",
+    "model-version": "0.0.1",
+    "name": "Forex Trader",
+    "width": "800",
+    "height": "600",
+    "data-file": "../data/DB.db",
+    "colors": {
+        "primary": "#262c6e",
+        "secondary": "#a3dae3",
+        "tertiary": "#4d4d4d",
+        "background": "#1f2533",
+        "text": "#ffffff",
+        "terminal": "#000000"
+    },
+    "menu": {
+        "terminal": {
+            "name": "Terminal",
+            "icon": "terminal.png"
+        },
+        "settings": {
+            "name": "Settings",
+            "icon": "settings.png"
+        },
+        "model": {
+            "name": "Model",
+            "icon": "model.png"
+        },
+        "analysis": {
+            "name": "Analysis",
+            "icon": "analysis.png"
+        }
+    }
+}
