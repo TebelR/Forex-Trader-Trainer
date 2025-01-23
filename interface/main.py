@@ -1,10 +1,10 @@
 import tkinter as tk
 from json import loads
 from tkinter import Menu
-import Terminal
-import DataBridge
+from V3.interface.Terminal import Terminal
+from V3.interface.DataBridge import DataBridge
 
-with open('../variables.json', 'r') as f:
+with open('V3/variables.json', 'r') as f:
     VARIABLES = loads(f.read())# for clarity, varaibles are defined in variables.json
 
 MENU = VARIABLES['menu']
@@ -20,10 +20,11 @@ settings_frame = None
 
 def generateRootWindow():
     root = tk.Tk()
+    #root = CoreApplication()
     root.geometry('{}x{}'.format(VARIABLES['width'], VARIABLES['height']))
     root.resizable(True, True)
     root.title('Trading Bot Interface {}'.format(VARIABLES['interface-version']))
-    root.protocol('WM_DELETE_WINDOW', lambda: root.destroy())
+    root.protocol('WM_DELETE_WINDOW', lambda: on_close(root))#lambda: root.destroy()
     return root
 
 
@@ -44,9 +45,9 @@ def generateLayout(root):
     root.grid_rowconfigure(0, weight=1)
     root.grid_rowconfigure(1, weight=1)
 
-    terminal_frame = tk.Frame(root, bg=VARIABLES['colors']['primary'])
-    terminal_frame.grid(row=0, column=0, sticky='nsew')
-    tk.Label(terminal_frame, text='Terminal', font=('Arial', 10)).pack(anchor='nw')
+    # terminal_frame = tk.Frame(root, bg=VARIABLES['colors']['primary'])
+    # terminal_frame.grid(row=0, column=0, sticky='nsew')
+    # tk.Label(terminal_frame, text='Terminal', font=('Arial', 10)).pack(anchor='nw')
 
     model_frame = tk.Frame(root, bg=VARIABLES['colors']['primary'])
     model_frame.grid(row=0, column=1, sticky='nsew')
@@ -62,10 +63,10 @@ def generateLayout(root):
     
 
 def form_terminal_frame():
-    global terminal
-    terminal = Terminal.Terminal(root, bg=VARIABLES['colors']['primary'])
-    terminal.grid(row=0, column=0, sticky='nsew')
-    terminal.restartSession(db)#try to find the last selected account
+    global terminal_frame
+    terminal_frame = Terminal(root, bg=VARIABLES['colors']['primary'], db = db)
+    terminal_frame.grid(row=0, column=0, sticky='nsew')
+    terminal_frame.restartSession()#try to find the last selected account
 
 def form_model_frame():
     pass
@@ -76,7 +77,12 @@ def form_analysis_frame():
 def form_settings_frame():
     pass
 
-
+def on_close(root):
+    global terminal_frame
+    print("Closing the application...")
+    if(terminal_frame is not None):
+        terminal_frame.destroy()
+    root.destroy()
 
 
 if __name__ == '__main__':

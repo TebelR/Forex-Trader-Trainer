@@ -4,7 +4,7 @@
     "name": "Forex Trader",
     "width": "800",
     "height": "600",
-    "data-file": "../data/DB.db",
+    "data-file": "V3/data/DB.db",
     "colors": {
         "primary": "#262c6e",
         "secondary": "#a3dae3",

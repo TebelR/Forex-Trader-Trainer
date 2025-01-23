@@ -7,12 +7,13 @@ class DataHandler:
 
     def __init__(self, db_file):
         self.conn = sqlite3.connect(db_file)
-        self.conn.cursor = self.conn.cursor()
-        self.cursor = self.conn.cursor
+        self.cursor = self.conn.cursor()
+        # self.cursor = self.conn.cursor
         self.db_file = db_file
 
     def __del__(self):
-        self.conn.close()
+        if(self.conn != None):
+            self.conn.close()
 
     
     def create_tables(self):
@@ -32,8 +33,10 @@ class DataHandler:
                             ask_close REAL NOT NULL,
                             volume REAL NOT NULL
                             )
+        """)
+        self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS Accounts (
-                            account_id TEXT PRIMARY KEY,
+                            account_id TEXT(20) PRIMARY KEY ,
                             tags TEXT,
                             balance REAL NOT NULL DEFAULT 0.0,
                             last_selected INTEGER NOT NULL DEFAULT 0
@@ -66,20 +69,25 @@ class DataHandler:
         self.cursor.execute("UPDATE Accounts SET last_selected = 1 WHERE account_id = ?", (account_id,))
         self.conn.commit()
 
-        self.cursor.execute("SELECT id FROM Accounts WHERE account_id = ?", (account_id,))
+        #DEBUG
+        accounts = self.getAccounts()
+        for account in accounts:
+            print(account)
+        self.cursor.execute("SELECT account_id FROM Accounts WHERE last_selected = 1")
         return self.cursor.fetchone()[0]
     
 
     #takes in a list of newly fetched accounts and creates/updates them accordingly
     def uploadAccounts(self, accounts):
-        for account in accounts:
+        for account in accounts['accounts']:
             try:
-                self.cursor.execute("INSERT INTO Accounts (account_id, tags, balance) VALUES (?, ?, ?)", (account['account_id'], account['tags'], account['balance']))
-            except:
+                self.cursor.execute("INSERT INTO Accounts (account_id, balance) VALUES (?, ?)", ((account['id']),0)) #account['balance'] inserted later
+            except Exception as e:
                 try:
-                    self.cursor.execute("INSERT INTO Accounts (account_id, tags) VALUES (?, ?)", (account['account_id'], account['tags']))#insert account without balance
-                except:
-                    self.cursor.execute("UPDATE Accounts SET tags = ? WHERE account_id = ?", (account['tags'], account['account_id']))#or update account if it exists already
+                    self.cursor.execute("INSERT INTO Accounts (account_id) VALUES (?)", ((account['id'])))#insert account without balance
+                except Exception as e:
+                    print(e)
+                    self.cursor.execute("UPDATE Accounts SET balance = ? WHERE account_id = ?", (0 ,account['id']))#or update account if it exists already
         self.conn.commit()
 
     

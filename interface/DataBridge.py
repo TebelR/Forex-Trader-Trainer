@@ -1,14 +1,17 @@
 #This file is meant to communicate with the database. It talks directly to the DataHandler class
-from data.DataHandler import DataHandler as db
+from V3.data.DataHandler import DataHandler
 
 class DataBridge:
 
+    db = None
+
     def __init__(self, db_file):
-        self.db = db(db_file)
+        self.db = DataHandler(db_file)
         self.db.create_tables()
 
     def __del__(self):
-        self.db.__del__()
+        if self.db != None:
+            self.db.__del__()
 
 
     #reconstructs a data point object and inserts it into DB

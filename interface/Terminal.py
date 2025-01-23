@@ -1,8 +1,8 @@
 from tkinter import Frame
 from tkinter import scrolledtext
 import tkinter as tk 
-import Interpretor
-import DataBridge
+from V3.interface import Interpretor
+from V3.interface.DataBridge import DataBridge
 
 class Terminal(Frame):
 
@@ -16,7 +16,11 @@ class Terminal(Frame):
         self.text_window = self.create_text_window()
         self.command_line = self.create_command_line()
         self.command_line.bind("<Return>", self.process_command)
+    
 
+    def destroy(self):
+        if self.db != None:
+            self.db.__del__()
 
 
     def create_text_window(self):
@@ -163,9 +167,10 @@ class Terminal(Frame):
         global selected_account
         selected_account = None
         try:
-            found_account = self.db.getLastSelectedAccount()
+            found_account = self.db.getLastAccount()
             if found_account is not None:
                 selected_account = found_account
                 self.output_command("Selected account: {}".format(selected_account.__str__()))
-        except:
+        except Exception as e:
+           print(e)
            self. output_command('No selected account found, need to fetch accounts first')
