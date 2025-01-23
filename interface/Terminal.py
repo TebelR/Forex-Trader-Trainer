@@ -47,7 +47,7 @@ class Terminal(Frame):
         tokens = command.split(" ")
 
         if (tokens[0] == 'test'):#test command
-            self.output_command('test passed')
+            self.output_command('Test passed')
 
         elif (tokens[0] == "list"):#list all fetched accounts
             self.list_command(tokens)
