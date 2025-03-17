@@ -8,7 +8,7 @@ VERSION = "v3" # current API version at OANDA
 accounts = None
 selected_account = None
 
-with open('V3/token.json', 'r') as f:
+with open('token.json', 'r') as f:
     TOKEN = json.loads(f.read())
 
 #Makes the innitial request to and fetches all accounts under the token
