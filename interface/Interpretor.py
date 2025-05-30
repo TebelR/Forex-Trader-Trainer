@@ -1,6 +1,7 @@
 import json
 import requests
 import datetime
+from typing import Dict, Optional
 #from V3.interface.DataBridge import DataBridge
 
 URL = "https://api-fxpractice.oanda.com/"# practice account
@@ -25,8 +26,8 @@ def getAccounts():
 
 
 #selects a new current account to work with
-def selectAccount(index):
-    global selected_account
+def selectAccount(index:int):
+    global selected_account, accounts
     selected_account = accounts["accounts"][index]["id"]
     return selected_account
 
@@ -112,7 +113,7 @@ def getPrices(pair, granularity, time_range, file_name):
             #clean up and finish the JSON wrap
             file.seek(-3, 1)
             file.truncate()
-            file.write('\n]}\n')
+            file.write('\n]}\n')#Theres an issue here------------------------------------------------------Truncation does not work, no new characters are written either
             file.close()    
         except:
             Exception("Error opening file")
@@ -120,7 +121,7 @@ def getPrices(pair, granularity, time_range, file_name):
 
 
 #uploads data to a file 
-def uploadData(data, file, point_count, num_candles):
+def uploadData(data, file, point_count:int, num_candles:int):
     if(data is not None and data["candles"] is not None):
         print("Number of candles returned: {}".format(len(data["candles"])))
 
@@ -135,7 +136,7 @@ def uploadData(data, file, point_count, num_candles):
 
 
 #converts granularity to an integer to calculate the number of candles that need to be fetched
-def getDivisor(granularity):
+def getDivisor(granularity: str) -> int:
     print(granularity)
     if(granularity == "M1"):
         return 1
@@ -155,6 +156,8 @@ def getDivisor(granularity):
         return 10080
     elif(granularity == "M"):
         return 43200
+    else:
+        return 1
     
 
 
